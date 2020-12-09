@@ -27,4 +27,23 @@ export class AppService {
     }
   }
 
+  async consultarTodasCategorias(): Promise<Categoria[]>{
+    try{
+      return await this.categoriaModel.find().exec();
+    } catch (error){
+      this.logger.log(`error: ${JSON.stringify(error)}`)
+      throw new RpcException(error.message);
+    }
+  }
+
+  async consultarCategoriaPeloId(_id: string): Promise<Categoria> {
+
+      try{
+        return await this.categoriaModel.findOne({_id}).exec();              
+      } catch (error){
+        this.logger.log(`error: ${JSON.stringify(error)}`)
+        throw new RpcException(error.message);
+      }
+  }
+
 }
