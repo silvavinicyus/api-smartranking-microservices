@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Logger, Post, UsePipes, ValidationPipe } from '@nestjs/common';
 import {ClientProxy, ClientProxyFactory, Transport} from '@nestjs/microservices';
 import { CriarCategoriaDto } from './dtos/criar-categoria.dto';
+require('dotenv').config();
 
 @Controller('api/v1')
 export class AppController {
@@ -8,11 +9,11 @@ export class AppController {
 
   private clienteAdminBackend: ClientProxy;
 
-  constructor() {
+  constructor() {    
     this.clienteAdminBackend = ClientProxyFactory.create({
       transport: Transport.RMQ,
       options: {
-        urls: ['amqp://user:haBMS1MYHI2E@184.73.151.25:5672/smartranking'],
+        urls: [process.env.RMQ_CONNECTION],        
         queue: 'admin-backend'
       },
     })
@@ -22,7 +23,7 @@ export class AppController {
   @UsePipes(ValidationPipe)
   async criarCategoria(
     @Body() criarCategoriaDto: CriarCategoriaDto
-  ){
+  ){        
     return await this.clienteAdminBackend.emit('criar-categoria', criarCategoriaDto);
   }
 }
