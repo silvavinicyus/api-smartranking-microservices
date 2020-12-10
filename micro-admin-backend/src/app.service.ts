@@ -46,4 +46,13 @@ export class AppService {
       }
   }
 
+  async atualizarCategoria(_id: string, categoria: Categoria){
+    try{
+      await this.categoriaModel.findByIdAndUpdate({_id}, {$set: categoria}).exec();
+    } catch(error){
+      this.logger.log(`error: ${JSON.stringify(error.message)}`);
+      throw new RpcException(error.message);
+    }
+  }
+
 }

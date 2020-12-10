@@ -1,6 +1,7 @@
-import { Body, Controller, Get, Logger, Post, Query, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, Logger, Param, Post, Put, Query, UsePipes, ValidationPipe } from '@nestjs/common';
 import {ClientProxy, ClientProxyFactory, Transport} from '@nestjs/microservices';
 import { Observable } from 'rxjs';
+import { AtualizarCategoriaDto } from './dtos/atualizar-categoria.dto';
 import { CriarCategoriaDto } from './dtos/criar-categoria.dto';
 require('dotenv').config();
 
@@ -33,5 +34,14 @@ export class AppController {
     @Query('idCategoria') _id: string
   ): Observable<any>{
     return this.clienteAdminBackend.send('consultar-categorias', _id ? _id : '');
+  }
+
+  @Put('categorias/:_id')
+  @UsePipes(ValidationPipe)
+  atualizarCategoria(
+    @Body() atualizarCategoriaDto: AtualizarCategoriaDto,
+    @Param('_id') _id: string
+  ){
+    this.clienteAdminBackend.emit('atualizar-categoria', {id: _id, categoria: atualizarCategoriaDto});
   }
 }
